@@ -787,3 +787,490 @@ Token chunking better aligns with:
 * Embedding limits
 
 ---
+
+# Important Traditional RAG Concepts Commonly Asked in Interviews
+
+# 1. Retriever
+
+## What is a Retriever?
+
+### Answer
+
+A retriever fetches the most relevant document chunks from the vector database based on semantic similarity.
+
+---
+
+## Types
+
+* Similarity Retriever
+* MMR Retriever
+* MultiQuery Retriever
+* Parent Document Retriever
+
+---
+
+## Interview One-Liner
+
+> "Retrievers fetch relevant contextual documents before LLM generation."
+
+---
+
+# 2. Top-K Retrieval
+
+## What is Top-K?
+
+### Answer
+
+Top-K defines how many most relevant chunks are retrieved from the vector database.
+
+---
+
+## Example
+
+```python id="t7o5p0"
+retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 5}
+)
+```
+
+---
+
+## Important Tradeoff
+
+| Small K       | Large K                   |
+| ------------- | ------------------------- |
+| Less noise    | More context              |
+| Faster        | Slower                    |
+| May miss info | May add irrelevant chunks |
+
+---
+
+# 3. MMR (Maximum Marginal Relevance)
+
+## What is MMR?
+
+### Answer
+
+MMR retrieves documents that are:
+
+* Relevant
+* Diverse
+
+instead of highly similar duplicate chunks.
+
+---
+
+## Why Important?
+
+### Answer
+
+Avoids redundant retrieval.
+
+---
+
+## Example
+
+```python id="9s3k3r"
+retriever = vectorstore.as_retriever(
+    search_type="mmr"
+)
+```
+
+---
+
+## Interview One-Liner
+
+> "MMR balances relevance and diversity during retrieval."
+
+---
+
+# 4. Metadata Filtering
+
+## What is Metadata Filtering?
+
+### Answer
+
+Filtering retrieved documents based on metadata.
+
+---
+
+## Example Metadata
+
+* Source
+* Date
+* Department
+* Author
+
+---
+
+## Example
+
+```python id="u0pwv9"
+filter={"department": "finance"}
+```
+
+---
+
+## Why Important?
+
+### Answer
+
+Improves retrieval precision.
+
+---
+
+# 5. Dense vs Sparse Retrieval
+
+# Dense Retrieval
+
+## Definition
+
+Uses embeddings/vector similarity.
+
+---
+
+## Examples
+
+* OpenAI embeddings
+* Sentence Transformers
+
+---
+
+# Sparse Retrieval
+
+## Definition
+
+Keyword-based retrieval.
+
+---
+
+## Examples
+
+* BM25
+* TF-IDF
+
+---
+
+# Comparison
+
+| Dense                | Sparse              |
+| -------------------- | ------------------- |
+| Semantic             | Keyword-based       |
+| Better understanding | Exact term matching |
+| Expensive            | Faster              |
+
+---
+
+## Interview One-Liner
+
+> "Dense retrieval captures semantic meaning, while sparse retrieval focuses on keyword matching."
+
+---
+
+# 6. BM25
+
+## What is BM25?
+
+### Answer
+
+BM25 is a traditional keyword-based ranking algorithm used in information retrieval.
+
+---
+
+## Why Important?
+
+### Answer
+
+Still highly effective for:
+
+* Exact term matching
+* Search systems
+* Hybrid search
+
+---
+
+# 7. Hybrid Search
+
+## What is Hybrid Search?
+
+### Answer
+
+Hybrid search combines:
+
+* Dense retrieval
+* Sparse retrieval
+
+for better retrieval performance.
+
+---
+
+## Why Important?
+
+### Answer
+
+Combines:
+
+* Semantic understanding
+* Exact keyword matching
+
+---
+
+## Interview One-Liner
+
+> "Hybrid search combines semantic and keyword retrieval for improved accuracy."
+
+---
+
+# 8. Re-ranking
+
+## What is Re-ranking?
+
+### Answer
+
+Re-ranking reorders retrieved documents using a stronger model after initial retrieval.
+
+---
+
+## Why Needed?
+
+### Answer
+
+Initial vector retrieval may not rank documents perfectly.
+
+---
+
+## Workflow
+
+```text id="d49kp8"
+Retriever
+   ↓
+Top-K Documents
+   ↓
+Re-ranker
+   ↓
+Best Ranked Context
+```
+
+---
+
+## Interview One-Liner
+
+> "Re-ranking improves retrieval quality by refining document ordering after initial retrieval."
+
+---
+
+# 9. Context Compression
+
+## What is Context Compression?
+
+### Answer
+
+Compressing retrieved documents to keep only relevant information before sending to the LLM.
+
+---
+
+## Why Important?
+
+### Answer
+
+Reduces:
+
+* Token usage
+* Noise
+* Latency
+
+---
+
+# 10. Retriever-Augmented Prompting
+
+## What is it?
+
+### Answer
+
+Injecting retrieved chunks directly into prompts before generation.
+
+---
+
+## Example
+
+```text id="jlwmv0"
+Context:
+[Retrieved Chunks]
+
+Question:
+What is RAG?
+```
+
+---
+
+# 11. Context Window Limitation
+
+## Important Interview Topic
+
+### Answer
+
+LLMs can process only limited tokens at once.
+
+This affects:
+
+* Number of retrieved chunks
+* Chunk size
+* Prompt engineering
+
+---
+
+# 12. Hallucination Mitigation
+
+## Beyond RAG
+
+### Other Methods
+
+* Grounding
+* Verification chains
+* Re-ranking
+* Citation generation
+
+---
+
+# 13. Semantic Search
+
+## What is Semantic Search?
+
+### Answer
+
+Semantic search retrieves documents based on meaning rather than exact keywords.
+
+---
+
+# 14. Indexing
+
+## What is Indexing?
+
+### Answer
+
+Indexing organizes embeddings for efficient retrieval.
+
+---
+
+## Popular Index Types
+
+* HNSW
+* IVF
+* Flat Index
+
+---
+
+# 15. ANN (Approximate Nearest Neighbor)
+
+## What is ANN?
+
+### Answer
+
+ANN algorithms speed up vector similarity search in large-scale vector databases.
+
+---
+
+## Why Important?
+
+### Answer
+
+Exact nearest neighbor search becomes very slow at scale.
+
+---
+
+# 16. Cosine Similarity
+
+## What is Cosine Similarity?
+
+### Answer
+
+Measures angular similarity between vectors.
+
+---
+
+## Why Commonly Used?
+
+### Answer
+
+Works well for semantic embeddings.
+
+---
+
+# Formula
+
+\text{Cosine Similarity} = \frac{A \cdot B}{|A||B|}
+
+---
+
+# 17. Retrieval Precision vs Recall
+
+# Precision
+
+## Definition
+
+How many retrieved documents are actually relevant.
+
+---
+
+# Recall
+
+## Definition
+
+How many relevant documents were successfully retrieved.
+
+---
+
+## Tradeoff
+
+| High Precision | High Recall                  |
+| -------------- | ---------------------------- |
+| Less noise     | More coverage                |
+| May miss info  | May retrieve irrelevant docs |
+
+---
+
+# 18. Query Expansion
+
+## What is Query Expansion?
+
+### Answer
+
+Enhancing user queries with related terms for better retrieval.
+
+---
+
+## Example
+
+```text id="mjlwm1"
+"AI" → "Artificial Intelligence, Machine Learning"
+```
+
+---
+
+# 19. Multi-Query Retrieval
+
+## What is Multi-Query Retrieval?
+
+### Answer
+
+Generating multiple reformulated queries from a single user query.
+
+---
+
+## Why Important?
+
+### Answer
+
+Improves retrieval coverage.
+
+---
+
+# 20. Parent-Child Retrieval
+
+## What is Parent-Child Retrieval?
+
+### Answer
+
+Store small child chunks for retrieval but return larger parent documents for better context.
+
+---
