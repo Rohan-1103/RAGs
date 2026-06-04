@@ -13,3 +13,4 @@ langchain-huggingface
 beautifulsoup4
 lxml
 tiktoken
+pandas
