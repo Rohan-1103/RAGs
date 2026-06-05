@@ -662,3 +662,135 @@ In reality, retrieval quality, chunking, re-ranking, and prompt grounding are eq
 # Best Advanced Interview One-Liner
 
 > "High-quality RAG systems depend more on retrieval optimization, chunking strategy, ranking quality, and context engineering than on the LLM itself."
+
+
+# Most Important Interview Questions
+
+## 1. Why do we evaluate RAG systems separately from normal chatbots?
+
+### Answer
+
+Because RAG systems contain both retrieval and generation stages, each introducing unique failure modes.
+
+---
+
+## 2. What is Retrieval Relevance?
+
+### Answer
+
+Measures whether retrieved documents are relevant to the user's query.
+
+---
+
+## 3. What is Answer Relevance?
+
+### Answer
+
+Measures whether the generated answer actually addresses the user's question.
+
+---
+
+## 4. What is Groundedness?
+
+### Answer
+
+Measures whether the generated answer is supported by retrieved documents.
+
+---
+
+## 5. What is Correctness?
+
+### Answer
+
+Measures whether the answer matches the expected ground truth answer.
+
+---
+
+## 6. Why is Groundedness important?
+
+### Answer
+
+It helps detect hallucinations even when answers appear plausible.
+
+---
+
+## 7. Why does Correctness require a dataset?
+
+### Answer
+
+Because correctness is measured against a reference answer.
+
+---
+
+## 8. Why use LLM as a Judge?
+
+### Answer
+
+To automate evaluation at scale while providing reasoning and scoring.
+
+---
+
+## 9. Why should the Judge LLM be stronger than the evaluated model?
+
+### Answer
+
+A stronger judge typically provides more reliable and consistent evaluations.
+
+---
+
+## 10. What is LangSmith used for?
+
+### Answer
+
+LangSmith provides observability, tracing, evaluation, debugging, and experiment comparison for LLM applications.
+
+---
+
+## 11. Can an answer be Correct but Not Grounded?
+
+### Answer
+
+Yes. The answer may be factually correct but not supported by retrieved documents.
+
+---
+
+## 12. Can an answer be Grounded but Incorrect?
+
+### Answer
+
+Yes. If retrieval itself contains incorrect or outdated information.
+
+---
+
+# Advanced Interview Questions
+
+## How would you identify whether a RAG failure comes from retrieval or generation?
+
+### Answer
+
+Use:
+
+* Retrieval Relevance to evaluate retrieval quality.
+* Groundedness and Correctness to evaluate generation quality.
+
+---
+
+## Which metric is most important for hallucination detection?
+
+### Answer
+
+Groundedness.
+
+---
+
+## Why is a single evaluation metric insufficient for RAG?
+
+### Answer
+
+Because retrieval and generation failures require different measurements.
+
+---
+
+# Best Interview One-Liner
+
+> "A production RAG system should be evaluated across retrieval relevance, answer relevance, groundedness, and correctness to separately measure retrieval quality, hallucination risk, answer quality, and factual accuracy."

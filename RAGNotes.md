@@ -1296,3 +1296,636 @@ A typical RAG evaluation workflow consists of three main steps:
  - Retrieval quality
  
 For this tutorial, we'll create and evaluate a bot that answers questions about a few of Lilian Weng's insightful blog posts.
+
+# RAG & Chatbot Evaluation — Interview Notes (LangSmith + LLM as Judge)
+
+# Why Do We Need RAG Evaluation?
+
+## Problem
+
+A RAG system can fail at multiple stages:
+
+```text
+User Question
+      ↓
+Retrieval
+      ↓
+Generation
+      ↓
+Final Answer
+```
+
+Even if the final answer looks good, the system may have:
+
+* Retrieved wrong documents
+* Ignored retrieved context
+* Hallucinated facts
+* Produced an irrelevant answer
+
+Therefore, we evaluate both:
+
+```text
+Retrieval Quality
++
+Generation Quality
+```
+
+---
+
+# Components Required for Evaluation
+
+## 1. Input
+
+The question sent to the chatbot.
+
+Example:
+
+```text
+What is RAG?
+```
+
+---
+
+## 2. Chatbot / RAG Pipeline
+
+The system being evaluated.
+
+Example:
+
+```text
+Question
+   ↓
+Retriever
+   ↓
+LLM
+   ↓
+Answer
+```
+
+---
+
+## 3. Output
+
+Generated answer from the chatbot.
+
+Example:
+
+```text
+RAG combines retrieval and generation.
+```
+
+---
+
+## 4. Reference Answer (Ground Truth)
+
+Expected answer used for comparison.
+
+Example:
+
+```text
+Retrieval-Augmented Generation combines retrieved context with LLM generation.
+```
+
+---
+
+# What is Ground Truth?
+
+## Definition
+
+A trusted answer against which generated answers are evaluated.
+
+---
+
+## Why Needed?
+
+Used to measure:
+
+```text
+Correctness
+```
+
+without requiring human evaluation every time.
+
+---
+
+# LLM as a Judge
+
+# Definition
+
+Using a separate LLM to evaluate chatbot responses.
+
+Instead of:
+
+```text
+Human Evaluator
+```
+
+we use:
+
+```text
+Judge LLM
+```
+
+---
+
+# Why Use LLM as Judge?
+
+## Benefits
+
+* Faster
+* Scalable
+* Automated
+* Consistent
+
+---
+
+# Workflow
+
+```text
+Question
+      ↓
+Reference Answer
+      ↓
+Generated Answer
+      ↓
+Judge LLM
+      ↓
+Score + Reasoning
+```
+
+---
+
+# Why Use a Stronger Model as Judge?
+
+## Interview Favorite
+
+### Answer
+
+A stronger model generally provides:
+
+* Better reasoning
+* Better grading consistency
+* Better hallucination detection
+
+---
+
+## Example
+
+Application:
+
+```text
+llama-3.1-8b
+```
+
+Judge:
+
+```text
+GPT-4o
+Claude Opus
+Llama-3.3-70B
+```
+
+---
+
+# Four Core RAG Evaluation Metrics
+
+# 1. Retrieval Relevance
+
+## Question
+
+```text
+Are the retrieved documents relevant to the query?
+```
+
+---
+
+## What It Evaluates
+
+Retriever quality.
+
+---
+
+## Pipeline Location
+
+```text
+Question
+      ↓
+Retrieved Documents
+```
+
+---
+
+## Example
+
+Question:
+
+```text
+What is RAG?
+```
+
+Retrieved:
+
+```text
+RAG Documentation
+```
+
+✅ Relevant
+
+---
+
+Retrieved:
+
+```text
+Weather Forecast
+```
+
+❌ Not Relevant
+
+---
+
+## Important Interview Point
+
+Bad retrieval causes:
+
+```text
+Garbage In
+     ↓
+Garbage Out
+```
+
+---
+
+# 2. Answer Relevance
+
+## Question
+
+```text
+Does the generated answer address the question?
+```
+
+---
+
+## What It Evaluates
+
+Whether the answer stays on topic.
+
+---
+
+## Example
+
+Question:
+
+```text
+What is RAG?
+```
+
+Answer:
+
+```text
+RAG combines retrieval and generation.
+```
+
+✅ Relevant
+
+---
+
+Answer:
+
+```text
+France is a country in Europe.
+```
+
+❌ Irrelevant
+
+---
+
+## Important Interview Point
+
+An answer can be:
+
+```text
+Grounded
++
+Incorrectly focused
+```
+
+Answer relevance catches this.
+
+---
+
+# 3. Groundedness
+
+## Question
+
+```text
+Is the answer supported by retrieved documents?
+```
+
+---
+
+## What It Evaluates
+
+Hallucination detection.
+
+---
+
+## Example
+
+Retrieved Context:
+
+```text
+Paris is the capital of France.
+```
+
+Answer:
+
+```text
+Paris is the capital of France.
+```
+
+✅ Grounded
+
+---
+
+Answer:
+
+```text
+Paris is the capital of France and has 15 million residents.
+```
+
+❌ Not Grounded
+
+Population claim was never retrieved.
+
+---
+
+## Interview One-Liner
+
+> Groundedness measures whether the answer is supported by retrieved evidence.
+
+---
+
+# 4. Correctness
+
+## Question
+
+```text
+Does the answer match the ground truth answer?
+```
+
+---
+
+## What It Evaluates
+
+Final factual accuracy.
+
+---
+
+## Example
+
+Ground Truth:
+
+```text
+Paris
+```
+
+Answer:
+
+```text
+Paris
+```
+
+✅ Correct
+
+---
+
+Answer:
+
+```text
+Lyon
+```
+
+❌ Incorrect
+
+---
+
+## Important
+
+Correctness requires:
+
+```text
+Ground Truth Dataset
+```
+
+while Groundedness does not.
+
+---
+
+# Difference Between the Four Metrics
+
+| Metric              | Checks                          |
+| ------------------- | ------------------------------- |
+| Retrieval Relevance | Retrieved docs relevant?        |
+| Answer Relevance    | Answer addresses question?      |
+| Groundedness        | Answer supported by docs?       |
+| Correctness         | Answer matches expected answer? |
+
+---
+
+# Most Important Interview Scenario
+
+Question:
+
+```text
+What is the capital of France?
+```
+
+Retrieved:
+
+```text
+Paris is capital of France.
+```
+
+Answer:
+
+```text
+Paris is capital of France and population is 15 million.
+```
+
+Evaluation:
+
+| Metric              | Result        |
+| ------------------- | ------------- |
+| Retrieval Relevance | ✅             |
+| Answer Relevance    | ✅             |
+| Groundedness        | ❌             |
+| Correctness         | Potentially ❌ |
+
+Reason:
+
+Population claim was hallucinated.
+
+---
+
+# Evaluation Pipeline
+
+# Step 1: Create Dataset
+
+Create:
+
+```text
+Input
++
+Expected Output
+```
+
+pairs.
+
+---
+
+## Example
+
+```json
+{
+  "question":"What is RAG?",
+  "answer":"Retrieval-Augmented Generation"
+}
+```
+
+---
+
+# Step 2: Run Application
+
+```text
+Dataset
+      ↓
+RAG App
+      ↓
+Generated Answers
+```
+
+---
+
+# Step 3: Run Judge LLM
+
+Judge evaluates:
+
+* Retrieval Relevance
+* Answer Relevance
+* Groundedness
+* Correctness
+
+---
+
+# Step 4: Analyze Results
+
+Identify:
+
+* Retrieval failures
+* Hallucinations
+* Generation issues
+
+---
+
+# LangSmith Evaluation Pipeline
+
+```text
+Create Dataset
+      ↓
+Run RAG App
+      ↓
+Evaluate
+      ↓
+Analyze Results
+```
+
+---
+
+# What is LangSmith?
+
+## Definition
+
+LangSmith is LangChain's:
+
+```text
+Observability
+Evaluation
+Tracing
+Debugging
+```
+
+platform.
+
+---
+
+# What Can LangSmith Do?
+
+## Tracing
+
+Track:
+
+```text
+User Query
+      ↓
+Retriever
+      ↓
+LLM
+      ↓
+Answer
+```
+
+---
+
+## Evaluation
+
+Run:
+
+```python
+client.evaluate(...)
+```
+
+---
+
+## Experiment Comparison
+
+Compare:
+
+```text
+GPT-4o
+vs
+Llama 3
+vs
+Claude
+```
+
+---
+
+## Debugging
+
+Find:
+
+* Hallucinations
+* Retrieval failures
+* Prompt issues
+
+---
+
+# Production Evaluation Workflow
+
+```text
+Dataset
+     ↓
+Model A
+     ↓
+Metrics
+
+Dataset
+     ↓
+Model B
+     ↓
+Metrics
+
+Compare Scores
+```
+
+---
