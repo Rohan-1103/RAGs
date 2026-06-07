@@ -14,3 +14,6 @@ beautifulsoup4
 lxml
 tiktoken
 pandas
+numpy
+matplotlib
+scikit-learn
